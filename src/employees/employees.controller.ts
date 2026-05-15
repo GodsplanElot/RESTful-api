@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { Prisma } from '@prisma/client';
 
@@ -8,12 +8,14 @@ export class EmployeesController {
 
   @Post()
   async create(@Body() createEmployeeDto: Prisma.EmployeeCreateInput) {
-    return this.employeesService.create(createEmployeeDto);
+    return this.databaseService.employee.create({
+      data: createEmployeeDto
+    })
   }
 
   @Get()
-  async findAll() {
-    return this.employeesService.findAll();
+  async findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
+    return this.employeesService.findAll(role);
   }
 
   @Get(':id')
